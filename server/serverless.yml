@@ -1,0 +1,87 @@
+service: ${env:APP_SERVICE_NAME}-${self:custom.appPosfix}
+variablesResolutionMode: 20210219
+useDotenv: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-plugin-optimize
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ${env:AWS_REGION}
+  stage: ${opt:stage,'dev'}
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    restApiId: ${self:custom.restApiId}
+    restApiRootResourceId: ${self:custom.restApiRootResourceId}
+
+custom:
+  appPosfix: ${env:APP_POSFIX}
+  apiGateway:
+  restApiId:
+    !If [
+      IsPrivate,
+      !ImportValue "OikoshrPrivateApiGateway-${self:provider.stage}-restApiId",
+      !ImportValue "OikoshrApiGateway-${self:provider.stage}-restApiId",
+    ]
+  restApiRootResourceId:
+    !If [
+      IsPrivate,
+      !ImportValue "OikoshrPrivateApiGateway-${self:provider.stage}-rootResourceId",
+      !ImportValue "OikoshrApiGateway-${self:provider.stage}-rootResourceId",
+    ]
+
+package:
+  individually: true
+
+functions:
+  add:
+    handler: src/add/add.sync
+    events:
+      - http:
+          path: calcs/add
+          method: post
+  add_async:
+    handler: src/add/add.async
+    events:
+      - http:
+          path: calcs/async/add
+          method: post
+          # async: true
+  simplePayroll:
+    handler: src/simplePayroll/simplePayroll.sync
+    events:
+      - http:
+          path: calcs/simplePayroll
+          method: post
+  thirteenthMonth_simple:
+    handler: src/thirteenthMonth_simple/thirteenthMonth_simple.sync
+    events:
+      - http:
+          path: calcs/thirteenthMonth_simple
+          method: post
+  thirteenthMonth_exact:
+    handler: src/thirteenthMonth_exact/thirteenthMonth_exact.sync
+    events:
+      - http:
+          path: calcs/thirteenthMonth_exact
+          method: post
+  vacation:
+    handler: src/vacations/vacations.sync
+    events:
+      - http:
+          path: calcs/vacations
+          method: post
+  settlement:
+    handler: src/settlement/settlement.sync
+    events:
+      - http:
+          path: calcs/settlement
+          method: post
+
+resources:
+  Conditions:
+    IsPrivate: !Equals ["private", "${self:custom.appPosfix}"]
