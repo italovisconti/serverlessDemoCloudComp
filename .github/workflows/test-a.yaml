@@ -56,5 +56,7 @@ jobs:
           cd ${{ github.workspace }}/server
           npm run test
           pm2 logs 0 --lines 5 --nostream
+      - name : Echoing
+        run: echo "Hello World"
       - name: Kill
         run: pm2 kill
