@@ -47,7 +47,7 @@ jobs:
           pm2 start run.sh
           pm2 ps
       - name: Wait
-        run: sleep 20
+        run: sleep 5
       - name: Test
         run: |
           pm2 logs 0 --lines 50 --nostream
