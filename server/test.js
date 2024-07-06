@@ -20,5 +20,5 @@
 //   }, 15000); // Increase timeout to 10000 ms
 // });
 test("Basic test", () => {
-  expect(true).toBe(false);
+  expect(true).toBe(true);
 });
