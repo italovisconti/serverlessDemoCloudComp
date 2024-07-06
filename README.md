@@ -1,4 +1,4 @@
-# OikosHR Backend Calcs 🔢 robado 
+# OikosHR Backend Calcs 🔢 robado jeje
 
 Servicio de Cálculos de OikosHR
 
